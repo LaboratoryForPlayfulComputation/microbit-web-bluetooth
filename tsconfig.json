@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "target": "es2016",
+    "noImplicitAny": true,
+    "typeRoots": ["node_modules/@types"]
+  },
+  "files": [
+    "test.ts"
+  ]
+}
