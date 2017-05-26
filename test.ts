@@ -15,15 +15,41 @@ let bluetoothSearchOptions:RequestDeviceOptions = {
     optionalServices: [MBIT_UART_SERVICE]
 };
 
+interface MessageSubscriber{
+    (message:string):void;
+}
+
 class MicroBitUART{
     rxCharacteristic:BluetoothRemoteGATTCharacteristic;
     txCharacteristic:BluetoothRemoteGATTCharacteristic;
 
+    private messageSubscribers:Array<MessageSubscriber> = []; 
+    private decoder: TextEncoding.TextDecoder;
+
     constructor(rxCharacteristic:BluetoothRemoteGATTCharacteristic, txCharacteristic:BluetoothRemoteGATTCharacteristic){
         this.rxCharacteristic = rxCharacteristic;
         this.txCharacteristic = txCharacteristic;
+
+        this.decoder = new TextDecoder();
+
+        this.txCharacteristic.startNotifications().then(characteristic =>{
+            characteristic.addEventListener('characteristicvaluechanged', ev => {
+                let value:ArrayBufferView = (<any>(event.target)).value;
+                let valueAsString:string = new TextDecoder().decode(value);
+                this.handleNewMessage(valueAsString);
+            } );
+        });
     }
 
+    subscribeToMessages(receiver:MessageSubscriber):void{
+        this.messageSubscribers.push(receiver);
+    }
+
+    private handleNewMessage(message:string):void{
+        this.messageSubscribers.forEach(subscriber => {
+            subscriber(message);
+        })
+    }
 
 
 
@@ -56,7 +82,9 @@ function connectClicked(e:MouseEvent){
 }
 
 function startReadingFromUART(mbit:MicroBitUART){
-    
+    mbit.subscribeToMessages(appendToLog);
 }
 
 connectButton.onclick = connectClicked;
+
+

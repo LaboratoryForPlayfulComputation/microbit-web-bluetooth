@@ -12,8 +12,25 @@ let bluetoothSearchOptions = {
 };
 class MicroBitUART {
     constructor(rxCharacteristic, txCharacteristic) {
+        this.messageSubscribers = [];
         this.rxCharacteristic = rxCharacteristic;
         this.txCharacteristic = txCharacteristic;
+        this.decoder = new TextDecoder();
+        this.txCharacteristic.startNotifications().then(characteristic => {
+            characteristic.addEventListener('characteristicvaluechanged', ev => {
+                let value = (event.target).value;
+                let valueAsString = new TextDecoder().decode(value);
+                this.handleNewMessage(valueAsString);
+            });
+        });
+    }
+    subscribeToMessages(receiver) {
+        this.messageSubscribers.push(receiver);
+    }
+    handleNewMessage(message) {
+        this.messageSubscribers.forEach(subscriber => {
+            subscriber(message);
+        });
     }
 }
 function appendToLog(moreText) {
@@ -41,5 +58,6 @@ function connectClicked(e) {
     });
 }
 function startReadingFromUART(mbit) {
+    mbit.subscribeToMessages(appendToLog);
 }
 connectButton.onclick = connectClicked;

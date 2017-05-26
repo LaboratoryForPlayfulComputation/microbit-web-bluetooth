@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/text-encoding": "0.0.30",
     "@types/web-bluetooth": "0.0.2"
   }
 }
