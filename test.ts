@@ -3,6 +3,8 @@ let MBIT_UART_RX_CHARACTERISTIC = '6E400003-B5A3-F393-E0A9-E50E24DCCA9E'.toLower
 let MBIT_UART_TX_CHARACTERISTIC = '6E400002-B5A3-F393-E0A9-E50E24DCCA9E'.toLowerCase(); //to receive data FROM the microbit
 
 let connectButton = document.getElementById("connectButton");
+let helloButton = document.getElementById("helloButton");
+
 let logRegion = document.getElementById("log");
 
 let ourMicrobitUART:MicroBitUART;
@@ -51,6 +53,13 @@ class MicroBitUART{
         })
     }
 
+    public send(key:String, value:String){
+        let kvstring = `${key}^${value}#`;
+        let encoder = new TextEncoder('utf-8');
+        let encoded = encoder.encode(kvstring);
+        this.rxCharacteristic.writeValue(encoded);
+    }
+
 
 
 }
@@ -85,6 +94,12 @@ function startReadingFromUART(mbit:MicroBitUART){
     mbit.subscribeToMessages(appendToLog);
 }
 
+function helloClicked(e:MouseEvent){
+    ourMicrobitUART.send("hello", "dude");
+}
+
+
 connectButton.onclick = connectClicked;
+helloButton.onclick = helloClicked;
 
 

@@ -2,6 +2,7 @@ let MBIT_UART_SERVICE = '6E400001-B5A3-F393-E0A9-E50E24DCCA9E'.toLowerCase(); //
 let MBIT_UART_RX_CHARACTERISTIC = '6E400003-B5A3-F393-E0A9-E50E24DCCA9E'.toLowerCase(); //to send TO the microbit
 let MBIT_UART_TX_CHARACTERISTIC = '6E400002-B5A3-F393-E0A9-E50E24DCCA9E'.toLowerCase(); //to receive data FROM the microbit
 let connectButton = document.getElementById("connectButton");
+let helloButton = document.getElementById("helloButton");
 let logRegion = document.getElementById("log");
 let ourMicrobitUART;
 let bluetoothSearchOptions = {
@@ -32,6 +33,12 @@ class MicroBitUART {
             subscriber(message);
         });
     }
+    send(key, value) {
+        let kvstring = `${key}^${value}#`;
+        let encoder = new TextEncoder('utf-8');
+        let encoded = encoder.encode(kvstring);
+        this.rxCharacteristic.writeValue(encoded);
+    }
 }
 function appendToLog(moreText) {
     logRegion.innerHTML += moreText + "<br>";
@@ -60,4 +67,8 @@ function connectClicked(e) {
 function startReadingFromUART(mbit) {
     mbit.subscribeToMessages(appendToLog);
 }
+function helloClicked(e) {
+    ourMicrobitUART.send("hello", "dude");
+}
 connectButton.onclick = connectClicked;
+helloButton.onclick = helloClicked;
