@@ -5,6 +5,10 @@ let connectButton = document.getElementById("connectButton");
 let helloButton = document.getElementById("helloButton");
 let logRegion = document.getElementById("log");
 let logCount = 0;
+function appendToLog(moreText) {
+    logCount += 1;
+    logRegion.innerHTML += `${logCount}:  ${moreText}  <br>`;
+}
 let ourMicrobitUART;
 let bluetoothSearchOptions = {
     filters: [{
@@ -39,11 +43,8 @@ class MicroBitUART {
         let encoder = new TextEncoder('utf-8');
         let encoded = encoder.encode(kvstring);
         this.rxCharacteristic.writeValue(encoded);
+        appendToLog("Sent >>>> " + kvstring);
     }
-}
-function appendToLog(moreText) {
-    logCount += 1;
-    logRegion.innerHTML += `${logCount}:  ${moreText}  <br>`;
 }
 function connectClicked(e) {
     navigator.bluetooth.requestDevice(bluetoothSearchOptions).then(device => {
@@ -67,7 +68,7 @@ function connectClicked(e) {
     });
 }
 function startReadingFromUART(mbit) {
-    mbit.subscribeToMessages(appendToLog);
+    mbit.subscribeToMessages((s) => { appendToLog("Read <<<< " + s); });
     mbit.subscribeToMessages(sayHelloBack);
 }
 function helloClicked(e) {

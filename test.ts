@@ -7,6 +7,10 @@ let helloButton = document.getElementById("helloButton");
 
 let logRegion = document.getElementById("log");
 let logCount = 0;
+function appendToLog(moreText:string){
+    logCount += 1;
+    logRegion.innerHTML += `${logCount}:  ${moreText}  <br>`;
+}
 
 let ourMicrobitUART:MicroBitUART;
 
@@ -59,15 +63,12 @@ class MicroBitUART{
         let encoder = new TextEncoder('utf-8');
         let encoded = encoder.encode(kvstring);
         this.rxCharacteristic.writeValue(encoded);
+        appendToLog("Sent >>>> " + kvstring);
+
     }
 
 
 
-}
-
-function appendToLog(moreText:string){
-    logCount += 1;
-    logRegion.innerHTML += `${logCount}:  ${moreText}  <br>`;
 }
 
 function connectClicked(e:MouseEvent){
@@ -93,7 +94,7 @@ function connectClicked(e:MouseEvent){
 }
 
 function startReadingFromUART(mbit:MicroBitUART){
-    mbit.subscribeToMessages(appendToLog);
+    mbit.subscribeToMessages( (s:string) => {appendToLog("Read <<<< " + s)});
     mbit.subscribeToMessages(sayHelloBack);
 }
 

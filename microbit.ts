@@ -1,7 +1,3 @@
-input.onButtonPressed(Button.A, () => {
-    blockytalkybluetooth.sendKeyValue("button", "a")
-})
-
 bluetooth.onBluetoothConnected(() => {
     basic.showLeds(`
         . . . . .
@@ -98,15 +94,29 @@ namespace blockytalkybluetooth {
             handlerToExamine = handlerToExamine.next
         }
     }
-
-    bluetooth.startUartService()
+    bluetooth.startUartService();
 }
+
+input.onButtonPressed(Button.A, () => {
+    blockytalkybluetooth.sendKeyValue("button", "a")
+})
+
+input.onButtonPressed(Button.B, () => {
+    for (let i = 0; i < 10; i++) {
+        blockytalkybluetooth.sendKeyValue("button-loop", "b")
+        basic.pause(40);
+    }
+})
+
 
 let counter = 0;
 blockytalkybluetooth.onMessageReceived("hello", (value: string) => {
     counter = counter + 1;
-    basic.showNumber(counter);
+    if ((counter % 10) == 0) {
+        basic.showNumber(counter);
+    }
 });
+
 
 basic.forever(() => {
     blockytalkybluetooth.handleIncomingUARTData()
