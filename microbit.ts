@@ -1,3 +1,5 @@
+//// COPY AND PASTE THIS CODE INTO THE PXT WEB EDITOR ////
+
 bluetooth.onBluetoothConnected(() => {
     basic.showLeds(`
         . . . . .
