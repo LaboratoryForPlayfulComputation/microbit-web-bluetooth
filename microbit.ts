@@ -1,24 +1,4 @@
 //// COPY AND PASTE THIS CODE INTO THE PXT WEB EDITOR ////
-
-bluetooth.onBluetoothConnected(() => {
-    basic.showLeds(`
-        . . . . .
-        . . # # .
-        . # . . .
-        . # . . .
-        . . # # .
-        `)
-})
-bluetooth.onBluetoothDisconnected(() => {
-    basic.showLeds(`
-        . . . # .
-        . . # # .
-        . # . # .
-        . # . # .
-        . . # # .
-        `)
-})
-
 namespace blockytalkybluetooth {
     let delimiter = "^";
     let terminator = "#";
@@ -99,6 +79,25 @@ namespace blockytalkybluetooth {
     bluetooth.startUartService();
 }
 
+bluetooth.onBluetoothConnected(() => {
+    basic.showLeds(`
+        . . . . .
+        . . # # .
+        . # . . .
+        . # . . .
+        . . # # .
+        `)
+})
+bluetooth.onBluetoothDisconnected(() => {
+    basic.showLeds(`
+        . . . # .
+        . . # # .
+        . # . # .
+        . # . # .
+        . . # # .
+        `)
+})
+
 input.onButtonPressed(Button.A, () => {
     blockytalkybluetooth.sendKeyValue("button", "a")
 })
@@ -110,7 +109,6 @@ input.onButtonPressed(Button.B, () => {
     }
 })
 
-
 let counter = 0;
 blockytalkybluetooth.onMessageReceived("hello", (value: string) => {
     counter = counter + 1;
@@ -118,7 +116,6 @@ blockytalkybluetooth.onMessageReceived("hello", (value: string) => {
         basic.showNumber(counter);
     }
 });
-
 
 basic.forever(() => {
     blockytalkybluetooth.handleIncomingUARTData()
