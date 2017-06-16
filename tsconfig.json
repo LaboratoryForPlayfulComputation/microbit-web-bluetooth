@@ -1,10 +1,12 @@
 {
   "compilerOptions": {
-    "target": "es2016",
+    "target": "es6",
+    //"lib": ["es2015"],
     "noImplicitAny": true,
     "typeRoots": ["node_modules/@types"]
   },
   "files": [
-    "test.ts"
+    //"test.ts",
+    "csv.ts"
   ]
 }
