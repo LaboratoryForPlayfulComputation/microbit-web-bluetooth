@@ -121,10 +121,12 @@ function storeDataPoint(message:String){
 
 function generateCSV(){
     let delimiter = ","
-    let output = keys.join(delimiter)+"\n"
+    let output = "seq,"+keys.join(delimiter)+"\n"
+
+    let seq = 1
 
     for (let dataPoint of storedData){
-        let dataRow = [];
+        let dataRow:Array<any> = [seq,];
         for (let key of keys){
             if (dataPoint.key == key){
                 dataRow.push(dataPoint.value)
@@ -133,6 +135,7 @@ function generateCSV(){
             }
         }
         output += dataRow.join(delimiter)+"\n"
+        seq += 1
     }
     return output;
 }
